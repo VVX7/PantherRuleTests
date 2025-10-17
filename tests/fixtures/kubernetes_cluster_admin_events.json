@@ -1,0 +1,65 @@
+{
+  "malicious_cluster_admin_creation": {
+    "verb": "create",
+    "objectRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "resource": "clusterrolebindings",
+      "name": "attacker-admin-binding"
+    },
+    "requestObject": {
+      "roleRef": {
+        "name": "cluster-admin",
+        "kind": "ClusterRole"
+      },
+      "subjects": [
+        {
+          "kind": "User",
+          "name": "attacker@external.com"
+        }
+      ]
+    },
+    "user": {
+      "username": "compromised-admin@cloudvault.com",
+      "groups": ["system:authenticated"]
+    },
+    "sourceIPs": ["203.0.113.45"],
+    "userAgent": "kubectl/v1.28.0"
+  },
+
+  "legitimate_system_binding": {
+    "verb": "create",
+    "objectRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "resource": "clusterrolebindings",
+      "name": "system-controller-binding"
+    },
+    "requestObject": {
+      "roleRef": {
+        "name": "cluster-admin",
+        "kind": "ClusterRole"
+      }
+    },
+    "user": {
+      "username": "system:serviceaccount:kube-system:controller-manager"
+    },
+    "sourceIPs": ["10.0.0.1"]
+  },
+
+  "benign_view_binding": {
+    "verb": "create",
+    "objectRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "resource": "clusterrolebindings",
+      "name": "readonly-binding"
+    },
+    "requestObject": {
+      "roleRef": {
+        "name": "view",
+        "kind": "ClusterRole"
+      }
+    },
+    "user": {
+      "username": "admin@cloudvault.com"
+    }
+  }
+}
